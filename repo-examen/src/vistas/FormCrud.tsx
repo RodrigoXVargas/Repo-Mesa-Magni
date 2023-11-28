@@ -9,10 +9,10 @@ import { useFetchIdArticulos } from "../customHooks/useFetchIdArticulo"
 
 function FormCrud() {
     const { id } = useParams()
-    const {rubros} = useFetchAllRubros()
+    const { rubros } = useFetchAllRubros()
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const {articulo, setArticulo} = id ? useFetchIdArticulos(id) : useFetchIdArticulos('0')
-    
+    const { articulo, setArticulo } = id ? useFetchIdArticulos(id) : useFetchIdArticulos('0')
+
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
         setArticulo((prevArticulo) => ({
@@ -38,7 +38,7 @@ function FormCrud() {
                     alert('Hubo un error en el guardado del contacto')
                     console.log(error)
                 })
-            
+
         }
 
     }
@@ -54,7 +54,12 @@ function FormCrud() {
                     <input className="input-Crud" type="text" name="denominacion" value={articulo.denominacion} onChange={handleChange} />
 
                     <label className="label-Crud" htmlFor="">codigo</label>
-                    <input className="input-Crud" type="text" name="codigo" value={articulo.codigo} onChange={handleChange} />
+                    {articulo.id === "" &&
+                        <input className="input-Crud" type="text" name="codigo" value={articulo.codigo} onChange={handleChange} />
+                    }
+                    {articulo.id !== "" &&
+                        <input className="input-Crud" type="text" name="codigo" value={articulo.codigo} onChange={handleChange} disabled />
+                    }
 
                     <label className="label-Crud" htmlFor="">precio</label>
                     <input className="input-Crud" type="number" name="precio" value={articulo.precio} onChange={handleChange} />

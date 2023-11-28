@@ -8,8 +8,8 @@ function Crud(){
 
     const handleDelete = async (id: string) => {
         if(confirm('Seguro que quiere eliminar el registro?')){
-            const respuesta = await deleteById(id)
-            alert('Se eliminó el registro' + respuesta)
+            await deleteById(id)
+            alert('Se eliminó el registro con id ' + id)
         } 
     }
 

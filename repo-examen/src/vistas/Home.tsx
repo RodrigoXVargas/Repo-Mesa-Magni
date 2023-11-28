@@ -6,27 +6,38 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useFetchAllRubros } from "../customHooks/useFetchAllRubros";
 
 function Home() {
-    const {rubros} = useFetchAllRubros()
+    const { rubros } = useFetchAllRubros()
     const [idRubroSeleccionado, setIdRubroSeleccionado] = useState<string>()
     const [articulos, setArticulos] = useState<Articulo[]>([])
+    const [visual, setVisual] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     const obtenerArtiiculosByRubro = async (idRubro: string) => {
-        if(idRubro === undefined) return
+        if (idRubro === undefined) return
         const datos: Articulo[] = await getAllArtByRubro(idRubro)
         setArticulos(datos)
     }
 
-    const handleChnageRubros = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (e.target.value !== "nada") {
+    const handleChangeRubros = (e: ChangeEvent<HTMLSelectElement>) => {
+        setVisual(false)
+        setLoading(false)
+
+        if (e.target.value === "nada") {
+            setIdRubroSeleccionado(e.target.value)
+        } else {
+            setVisual(true)
+            setLoading(true)
             setIdRubroSeleccionado(e.target.value)
             obtenerArtiiculosByRubro(e.target.value)
+                .finally(() => setLoading(false))
+
         }
     }
 
     return (
         <>
             <div>
-                <select value={idRubroSeleccionado} onChange={handleChnageRubros}>
+                <select value={idRubroSeleccionado} onChange={handleChangeRubros}>
                     <option value="nada">Seleccione un rubro</option>
                     {rubros.map((rubro: Rubro) => (
                         <option key={rubro.id} value={rubro.id}>{rubro.denominacion}</option>
@@ -44,19 +55,29 @@ function Home() {
                             <td>precio</td>
                         </tr>
                     </thead>
-                    <tbody>
-                    {articulos.map((articulo: Articulo) => (
-                        <tr>
-                            <td>{articulo.id}</td>
-                            <td>{articulo.codigo}</td>
-                            <td>{articulo.denominacion}</td>
-                            <td>{articulo.precio}</td>
-                        </tr>
-                    ))}
-                    </tbody>
+                    {visual &&
+                        <tbody>
+                            {loading &&
+                                <tr>
+                                    <td>Cargando</td>
+                                    <td>Cargando</td>
+                                    <td>Cargando</td>
+                                    <td>Cargando</td>
+                                </tr>}
+
+                            {!loading &&
+                                articulos.map((articulo: Articulo) => (
+                                    <tr>
+                                        <td>{articulo.id}</td>
+                                        <td>{articulo.codigo}</td>
+                                        <td>{articulo.denominacion}</td>
+                                        <td>{articulo.precio}</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    }
                 </table>
-                    
-                
             </div>
         </>
     )
